@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Status Page</title>
+    <meta http-equiv="refresh" content="5"> <!-- Auto-reload setiap 5 detik -->
+</head>
+<body>
+    <h1>Status Page</h1>
+    <p>Status Air: <span id="waterStatus"></span></p>
+    <p>Status Angin: <span id="windStatus"></span></p>
+    <p>Terakhir Diperbarui: <span id="lastUpdated"></span></p>
+
+    <script>
+        function getStatus() {
+            fetch('/status')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('waterStatus').innerText = getStatusText(data.status.water);
+                    document.getElementById('windStatus').innerText = getStatusText(data.status.wind);
+                    document.getElementById('lastUpdated').innerText = new Date().toLocaleString();
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function getStatusText(value) {
+            if (value < 5) {
+                return 'Aman';
+            } else if (value >= 6 && value <= 8) {
+                return 'Siaga';
+            } else {
+                return 'Bahaya';
+            }
+        }
+
+        getStatus(); // Panggil getStatus saat halaman dimuat
+        setInterval(getStatus, 5000); // Panggil getStatus setiap 5 detik
+    </script>
+</body>
+</html>
